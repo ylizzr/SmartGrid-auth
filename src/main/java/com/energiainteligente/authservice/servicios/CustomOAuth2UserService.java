@@ -19,6 +19,7 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
     public CustomOAuth2UserService(UsuarioRepositorio usuarioRepositorio) {
         this.usuarioRepositorio = usuarioRepositorio;
     }
+    
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) {
@@ -28,24 +29,26 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         String nombre = oAuth2User.getAttribute("name");
         String correo = oAuth2User.getAttribute("email");
 
-        // Buscar si ya existe
+        String rol = (String) userRequest.getAdditionalParameters().getOrDefault("rol", "USUARIO");
+
         Usuario usuario = usuarioRepositorio.findByGoogleId(googleId)
                 .orElseGet(() -> {
                     Usuario nuevo = new Usuario();
                     nuevo.setGoogleId(googleId);
                     nuevo.setCorreo(correo);
                     nuevo.setNombre(nombre);
-                    nuevo.setRol("USUARIO"); // por defecto
+                    nuevo.setRol(rol.toUpperCase()); // CLIENTE u OPERADOR
                     return nuevo;
                 });
 
-        usuario.setNombre(nombre); // Por si cambió en Google
+        usuario.setNombre(nombre);
         usuarioRepositorio.save(usuario);
 
         return new DefaultOAuth2User(
                 Collections.singleton(new SimpleGrantedAuthority("ROLE_" + usuario.getRol())),
                 oAuth2User.getAttributes(),
-                "sub" // el identificador principal del usuario
+                "sub"
         );
     }
+
 }

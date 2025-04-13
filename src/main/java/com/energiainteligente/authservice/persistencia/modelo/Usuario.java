@@ -14,7 +14,7 @@ public class Usuario {
     private String correo;
     private String rol;
 
-    // Getters
+
     public Long getId() {
         return id;
     }
@@ -35,7 +35,7 @@ public class Usuario {
         return rol;
     }
 
-    // Setters
+
     public void setId(Long id) {
         this.id = id;
     }
