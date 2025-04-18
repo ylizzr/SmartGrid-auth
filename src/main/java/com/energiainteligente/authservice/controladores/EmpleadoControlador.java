@@ -5,6 +5,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
+import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
 @RequestMapping("/empleado")
@@ -23,7 +24,7 @@ public class EmpleadoControlador {
     }
 
     @PostMapping("/validar")
-    public String procesarValidacion(
+    public RedirectView procesarValidacion(
             @RequestParam String correo,
             @RequestParam String cedula,
             Model model,
@@ -32,15 +33,15 @@ public class EmpleadoControlador {
         try {
             if (empleadoServicio.validarEmpleado(correo, cedula)) {
                 redirectAttributes.addAttribute("correo", correo);
-                return "redirect:/empleado/bienvenida";
+                return new RedirectView("/empleado/bienvenida");
             } else {
                 model.addAttribute("error", "Credenciales incorrectas");
                 model.addAttribute("correo", correo);
-                return "validar-empleado";
+                return new RedirectView("/empleado/validar");
             }
         } catch (Exception e) {
             model.addAttribute("error", e.getMessage());
-            return "error";
+            return new RedirectView("/error");
         }
     }
 

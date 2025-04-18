@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es">
+<html lang="es" xmlns:th="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -49,15 +49,23 @@
 <body>
 <div class="role-container">
     <h2>Seleccione su tipo de usuario</h2>
-    <form action="/seleccionar-rol" method="post">
-        <button type="submit" name="rol" value="CLIENTE" class="role-btn client-btn">
-            Soy Cliente
-        </button>
-        <button type="submit" name="rol" value="EMPLEADO" class="role-btn employee-btn">
-            Soy Empleado
-        </button>
-    </form>
+    <button id="soyCliente" class="role-btn client-btn">
+        Soy Cliente
+    </button>
+    <button id="soyEmpleado" class="role-btn employee-btn">
+        Soy Empleado
+    </button>
     <div id="error-message" class="error" th:if="${error}" th:text="${error}"></div>
 </div>
+
+<script>
+    document.getElementById('soyCliente').addEventListener('click', function() {
+        window.location.href = 'validar-cliente.html';
+    });
+
+    document.getElementById('soyEmpleado').addEventListener('click', function() {
+        window.location.href = 'validar-empleado.html';
+    });
+</script>
 </body>
 </html>

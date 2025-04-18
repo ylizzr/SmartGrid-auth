@@ -1,7 +1,7 @@
 package com.energiainteligente.authservice.controladores;
 
 import com.energiainteligente.authservice.persistencia.modelo.Usuario;
-import com.energiainteligente.authservice.servicios.UsuarioServicio;
+import com.energiainteligente.authservice.persistencia.repositorio.UsuarioRepositorio;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
@@ -11,10 +11,10 @@ import org.springframework.web.servlet.view.RedirectView;
 @Controller
 public class InicioControlador {
 
-    private final UsuarioServicio usuarioServicio;
+    private final UsuarioRepositorio usuarioRepositorio;
 
-    public InicioControlador(UsuarioServicio usuarioServicio) {
-        this.usuarioServicio = usuarioServicio;
+    public InicioControlador(UsuarioRepositorio usuarioRepositorio) {
+        this.usuarioRepositorio = usuarioRepositorio;
     }
 
     @GetMapping("/")
@@ -27,17 +27,18 @@ public class InicioControlador {
         OAuth2User principal = (OAuth2User) authentication.getPrincipal();
         String correo = principal.getAttribute("email");
 
-        Usuario usuario = usuarioServicio.buscarPorCorreo(correo);
+        Usuario usuario = usuarioRepositorio.findByCorreo(correo)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+
         if (usuario.getRol() == null || usuario.getRol().equalsIgnoreCase("PENDIENTE")) {
-            return new RedirectView("/seleccionar-rol.html?correo=" + correo);
+            return new RedirectView("/seleccion-rol.html?correo=" + correo);
         }
 
         if (usuario.getRol().equalsIgnoreCase("CLIENTE")) {
-            return new RedirectView("/validar-cliente.html?correo=" + correo);
+            return new RedirectView("/cliente/validar?correo=" + correo);
         } else if (usuario.getRol().equalsIgnoreCase("EMPLEADO")) {
-            return new RedirectView("/validar-empleado.html?correo=" + correo);
+            return new RedirectView("/empleado/validar?correo=" + correo);
         }
-
-        return new RedirectView("/acceso-denegado.html");
+        return new RedirectView("/login.html");
     }
 }

@@ -2,8 +2,8 @@ package com.energiainteligente.authservice.controladores;
 
 import com.energiainteligente.authservice.servicios.ClienteServicio;
 import com.energiainteligente.authservice.servicios.UsuarioServicio;
-import jakarta.persistence.Id;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
@@ -22,27 +22,32 @@ public class ClienteControlador {
     @PostMapping("/seleccionar")
     public RedirectView seleccionarRolCliente(@RequestParam String correo) {
         usuarioServicio.actualizarRol(correo, "CLIENTE");
-        return new RedirectView("/validar-cliente.html?correo=" + correo);
+        return new RedirectView("/cliente/validar?correo=" + correo);
+    }
+
+    @GetMapping("/validar")
+    public String validarCliente(@RequestParam String correo, Model model) {
+        model.addAttribute("correo", correo);
+        return "validar-cliente";
     }
 
     @PostMapping("/validar")
-    public RedirectView validarCliente(@RequestParam String numeroCuenta) {
+    public RedirectView procesarValidarCliente(@RequestParam String correo, @RequestParam String numeroCuenta) {
         if (clienteServicio.existeClientePorNumeroCuenta(numeroCuenta)) {
-            return new RedirectView("/actualizar-cliente.html?numeroCuenta=" + numeroCuenta);
+            return new RedirectView("/cliente/actualizar?correo=" + correo);
         } else {
             return new RedirectView("/acceso-denegado.html");
         }
     }
 
-
     @PostMapping("/actualizar")
     public RedirectView actualizarCliente(
+            @RequestParam String correo,
             @RequestParam String nombre,
             @RequestParam Long Id,
-            @RequestParam String celular,
-            @RequestParam String correo) {
+            @RequestParam String celular) {
 
-        clienteServicio.actualizarDatosCliente(correo, nombre, Id, celular);
+        clienteServicio.actualizarDatosCliente(correo, nombre,Id, celular);
         return new RedirectView("/bienvenida-cliente.html");
     }
 }
