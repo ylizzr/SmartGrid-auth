@@ -22,7 +22,7 @@ public class ClienteServicio {
 
     public Cliente validarCliente(String correo, String numeroCuenta) {
         Cliente cliente = clienteRepositorio.findByNumeroCuenta(numeroCuenta)
-                .orElseThrow(() -> new RuntimeException("Número de cuenta no registrado"));
+                .orElseThrow(() -> new RuntimeException("El número de cuenta no existe"));
 
         if (!cliente.getCorreoElectronico().equalsIgnoreCase(correo)) {
             throw new RuntimeException("El correo no coincide con el cliente registrado");
@@ -30,6 +30,7 @@ public class ClienteServicio {
 
         return cliente;
     }
+
 
     public Cliente actualizarDatosCliente(String numeroCuenta, String nombre, Long Id, String celular) {
         Cliente cliente = clienteRepositorio.findByNumeroCuenta(numeroCuenta)

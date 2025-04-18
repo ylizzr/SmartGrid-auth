@@ -2,10 +2,12 @@ package com.energiainteligente.authservice.controladores;
 
 import com.energiainteligente.authservice.servicios.ClienteServicio;
 import com.energiainteligente.authservice.servicios.UsuarioServicio;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
+
 
 @Controller
 @RequestMapping("/cliente")
@@ -22,21 +24,23 @@ public class ClienteControlador {
     @PostMapping("/seleccionar")
     public RedirectView seleccionarRolCliente(@RequestParam String correo) {
         usuarioServicio.actualizarRol(correo, "CLIENTE");
-        return new RedirectView("/cliente/validar?correo=" + correo);
+        return new RedirectView("/cliente/validar-cliente?correo=" + correo);
     }
 
-    @GetMapping("/validar")
-    public String validarCliente(@RequestParam String correo, Model model) {
+    @GetMapping("/validar-cliente")
+    public String mostrarValidarCliente(@RequestParam String correo, Model model) {
         model.addAttribute("correo", correo);
         return "validar-cliente";
     }
 
-    @PostMapping("/validar")
-    public RedirectView procesarValidarCliente(@RequestParam String correo, @RequestParam String numeroCuenta) {
-        if (clienteServicio.existeClientePorNumeroCuenta(numeroCuenta)) {
-            return new RedirectView("/cliente/actualizar?correo=" + correo);
-        } else {
-            return new RedirectView("/acceso-denegado.html");
+    @PostMapping("/validar-cliente")
+    @ResponseBody
+    public ResponseEntity<?> validarCliente(@RequestParam String numeroCuenta, @RequestParam String correo) {
+        try {
+            clienteServicio.validarCliente(correo, numeroCuenta);
+            return ResponseEntity.ok().body(("/bienvenido-cliente.html"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(e.getMessage());
         }
     }
 
@@ -48,6 +52,6 @@ public class ClienteControlador {
             @RequestParam String celular) {
 
         clienteServicio.actualizarDatosCliente(correo, nombre,Id, celular);
-        return new RedirectView("/bienvenida-cliente.html");
+        return new RedirectView("/bienvenido-cliente.html");
     }
 }

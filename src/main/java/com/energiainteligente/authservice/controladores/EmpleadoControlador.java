@@ -1,10 +1,11 @@
 package com.energiainteligente.authservice.controladores;
 
 import com.energiainteligente.authservice.servicios.EmpleadoServicio;
+import com.energiainteligente.authservice.servicios.UsuarioServicio;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import org.springframework.web.servlet.view.RedirectView;
 
 @Controller
@@ -12,9 +13,11 @@ import org.springframework.web.servlet.view.RedirectView;
 public class EmpleadoControlador {
 
     private final EmpleadoServicio empleadoServicio;
+    private final UsuarioServicio usuarioServicio;
 
-    public EmpleadoControlador(EmpleadoServicio empleadoServicio) {
+    public EmpleadoControlador(EmpleadoServicio empleadoServicio, UsuarioServicio usuarioServicio) {
         this.empleadoServicio = empleadoServicio;
+        this.usuarioServicio = usuarioServicio;
     }
 
     @GetMapping("/validar")
@@ -24,24 +27,16 @@ public class EmpleadoControlador {
     }
 
     @PostMapping("/validar")
-    public RedirectView procesarValidacion(
-            @RequestParam String correo,
-            @RequestParam String cedula,
-            Model model,
-            RedirectAttributes redirectAttributes) {
-
+    @ResponseBody
+    public ResponseEntity<?> procesarValidacion(@RequestParam String correo, @RequestParam String cedula) {
         try {
             if (empleadoServicio.validarEmpleado(correo, cedula)) {
-                redirectAttributes.addAttribute("correo", correo);
-                return new RedirectView("/empleado/bienvenida");
+                return ResponseEntity.ok(("/empleado/bienvenida?correo=" + correo));
             } else {
-                model.addAttribute("error", "Credenciales incorrectas");
-                model.addAttribute("correo", correo);
-                return new RedirectView("/empleado/validar");
+                return ResponseEntity.badRequest().body("Credenciales incorrectas");
             }
         } catch (Exception e) {
-            model.addAttribute("error", e.getMessage());
-            return new RedirectView("/error");
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 
