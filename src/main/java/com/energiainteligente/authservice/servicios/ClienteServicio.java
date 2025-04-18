@@ -2,7 +2,6 @@ package com.energiainteligente.authservice.servicios;
 
 import com.energiainteligente.authservice.persistencia.modelo.Cliente;
 import com.energiainteligente.authservice.persistencia.repositorio.ClienteRepositorio;
-import jakarta.persistence.Id;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 

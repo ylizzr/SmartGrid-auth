@@ -5,7 +5,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.annotation.web.configuration.WebSecurityCustomizer;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
 
@@ -26,12 +25,11 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
-                                "/login.html", //  Correcto:  login.html  es  la  página  de  inicio
+                                "/login.html",
                                 "/seleccion-rol.html",
                                 "/registro-cliente.html",
                                 "/validar-cliente.html",
                                 "/validar-empleado.html",
-                                "/acceso-denegado.html",
                                 "/css/**",
                                 "/js/**"
                         ).permitAll()
@@ -40,7 +38,7 @@ public class SecurityConfig {
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
-                        .loginPage("/login.html") //  Correcto:  login.html  es  la  página  de  inicio  de  OAuth2
+                        .loginPage("/login.html")
                         .authorizationEndpoint(authorization -> authorization
                                 .baseUri("/oauth2/authorization")
                         )

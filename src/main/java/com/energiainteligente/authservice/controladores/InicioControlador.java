@@ -35,7 +35,7 @@ public class InicioControlador {
         }
 
         if (usuario.getRol().equalsIgnoreCase("CLIENTE")) {
-            return new RedirectView("/cliente/validar?correo=" + correo);
+            return new RedirectView("/cliente/validar-cliente?correo=" + correo);
         } else if (usuario.getRol().equalsIgnoreCase("EMPLEADO")) {
             return new RedirectView("/empleado/validar?correo=" + correo);
         }

@@ -8,6 +8,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
 
+import java.util.Collections;
+
 
 @Controller
 @RequestMapping("/cliente")
@@ -38,7 +40,7 @@ public class ClienteControlador {
     public ResponseEntity<?> validarCliente(@RequestParam String numeroCuenta, @RequestParam String correo) {
         try {
             clienteServicio.validarCliente(correo, numeroCuenta);
-            return ResponseEntity.ok().body(("/bienvenido-cliente.html"));
+            return ResponseEntity.ok().body(Collections.singletonMap("redirectUrl", "/bienvenido-cliente.html"));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }
