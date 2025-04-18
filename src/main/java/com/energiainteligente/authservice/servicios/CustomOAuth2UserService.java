@@ -1,54 +1,43 @@
 package com.energiainteligente.authservice.servicios;
 
 import com.energiainteligente.authservice.persistencia.modelo.Usuario;
-import com.energiainteligente.authservice.persistencia.repositorio.UsuarioRepositorio;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
+import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
-import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
 import java.util.Collections;
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
 
-    private final UsuarioRepositorio usuarioRepositorio;
+    private final UsuarioServicio usuarioServicio;
 
-    public CustomOAuth2UserService(UsuarioRepositorio usuarioRepositorio) {
-        this.usuarioRepositorio = usuarioRepositorio;
+    public CustomOAuth2UserService(UsuarioServicio usuarioServicio) {
+        this.usuarioServicio = usuarioServicio;
     }
-    
 
     @Override
-    public OAuth2User loadUser(OAuth2UserRequest userRequest) {
+    public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        String googleId = oAuth2User.getAttribute("sub");
-        String nombre = oAuth2User.getAttribute("name");
-        String correo = oAuth2User.getAttribute("email");
+        try {
+            String email = oAuth2User.getAttribute("email");
+            String googleId = oAuth2User.getAttribute("sub");
 
-        String rol = (String) userRequest.getAdditionalParameters().getOrDefault("rol", "USUARIO");
+            Usuario usuario = usuarioServicio.buscarPorCorreo(email);
 
-        Usuario usuario = usuarioRepositorio.findByGoogleId(googleId)
-                .orElseGet(() -> {
-                    Usuario nuevo = new Usuario();
-                    nuevo.setGoogleId(googleId);
-                    nuevo.setCorreo(correo);
-                    nuevo.setNombre(nombre);
-                    nuevo.setRol(rol.toUpperCase()); // CLIENTE u OPERADOR
-                    return nuevo;
-                });
+            return new DefaultOAuth2User(
+                    Collections.singleton(new SimpleGrantedAuthority("ROLE_" + usuario.getRol())),
+                    oAuth2User.getAttributes(),
+                    "sub"
+            );
 
-        usuario.setNombre(nombre);
-        usuarioRepositorio.save(usuario);
-
-        return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_" + usuario.getRol())),
-                oAuth2User.getAttributes(),
-                "sub"
-        );
+        } catch (Exception e) {
+            throw new OAuth2AuthenticationException("Error al procesar el usuario OAuth2");
+        }
     }
-
 }
