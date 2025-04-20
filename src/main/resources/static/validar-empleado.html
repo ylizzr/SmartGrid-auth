@@ -65,23 +65,19 @@
     <p>Por favor ingrese su cédula</p>
 
     <form id="validarEmpleadoForm">
-        <input type="hidden" id="correo" name="correo" th:value="${correo}">
-        <div class="form-group">
+	<div class="form-group´">
             <label for="cedula">Cédula:</label>
             <input type="text" id="cedula" name="cedula" required>
         </div>
         <button type="submit">Validar</button>
     </form>
 
-    <div id="error-message" class="error" style="display: none;"></div>
-</div>
 
-<script th:inline="javascript">
+<script>
     document.getElementById('validarEmpleadoForm').addEventListener('submit', function (event) {
         event.preventDefault();
 
         const cedula = document.getElementById('cedula').value;
-        const correo = document.getElementById('correo').value;
 
         fetch('/empleado/validar', {
             method: 'POST',
@@ -89,24 +85,20 @@
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
             body: new URLSearchParams({
-                cedula: cedula,
-                correo: correo
+                cedula: cedula
             })
         })
-        .then(response => response.json())
+        .then(response => response.text())
         .then(data => {
-            if (data && data.redirectUrl) {
-                window.location.href = data.redirectUrl;
-            } else if (data) {
-                document.getElementById('error-message').textContent = data;
-                document.getElementById('error-message').style.display = 'block';
+            if (data.startsWith('/empleado/bienvenida')) {
+                window.location.href = data;
             } else {
-                document.getElementById('error-message').textContent = "Empleado no encontrado";
+                document.getElementById('error-message').textContent = data || "Empleado no válido.";
                 document.getElementById('error-message').style.display = 'block';
             }
         })
-        .catch(error => {
-            document.getElementById('error-message').textContent = "Empleado no encontrado";
+        .catch(() => {
+            document.getElementById('error-message').textContent = "Error al validar.";
             document.getElementById('error-message').style.display = 'block';
         });
     });

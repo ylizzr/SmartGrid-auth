@@ -1,5 +1,6 @@
 package com.energiainteligente.authservice.controladores;
 
+import com.energiainteligente.authservice.persistencia.modelo.Empleado;
 import com.energiainteligente.authservice.servicios.EmpleadoServicio;
 import com.energiainteligente.authservice.servicios.UsuarioServicio;
 import org.springframework.http.ResponseEntity;
@@ -20,18 +21,13 @@ public class EmpleadoControlador {
         this.usuarioServicio = usuarioServicio;
     }
 
-    @GetMapping("/validar")
-    public String mostrarValidacion(@RequestParam String correo, Model model) {
-        model.addAttribute("correo", correo);
-        return "validar-empleado";
-    }
 
     @PostMapping("/validar")
     @ResponseBody
-    public ResponseEntity<?> procesarValidacion(@RequestParam String correo, @RequestParam String cedula) {
+    public ResponseEntity<?> procesarValidacion(@RequestParam String cedula) {
         try {
-            if (empleadoServicio.validarEmpleado(correo, cedula)) {
-                return ResponseEntity.ok(("/empleado/bienvenida?correo=" + correo));
+            if (empleadoServicio.validarEmpleado(cedula)) {
+                return ResponseEntity.ok(("/empleado/bienvenida?cedula=" + cedula));
             } else {
                 return ResponseEntity.badRequest().body("Credenciales incorrectas");
             }
@@ -41,8 +37,9 @@ public class EmpleadoControlador {
     }
 
     @GetMapping("/bienvenida")
-    public String mostrarBienvenida(@RequestParam String correo, Model model) {
-        model.addAttribute("empleado", empleadoServicio.obtenerPorCorreo(correo));
-        return "bienvenida-empleado";
+    public String mostrarBienvenida(@RequestParam String cedula, Model model) {
+        Empleado empleado = empleadoServicio.obtenerPorCedula(cedula);
+        model.addAttribute("empleado", empleado);
+        return "redirect:/bienvenida-empleado.html";
     }
 }

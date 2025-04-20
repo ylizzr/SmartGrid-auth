@@ -5,6 +5,7 @@ import com.energiainteligente.authservice.persistencia.repositorio.ClienteReposi
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+
 @Service
 @Transactional
 public class ClienteServicio {
@@ -19,24 +20,18 @@ public class ClienteServicio {
         return clienteRepositorio.findByNumeroCuenta(numeroCuenta).isPresent();
     }
 
-    public Cliente validarCliente(String correo, String numeroCuenta) {
-        Cliente cliente = clienteRepositorio.findByNumeroCuenta(numeroCuenta)
+    public Cliente validarCliente(String numeroCuenta) {
+        return clienteRepositorio.findByNumeroCuenta(numeroCuenta)
                 .orElseThrow(() -> new RuntimeException("El número de cuenta no existe"));
 
-        if (!cliente.getCorreoElectronico().equalsIgnoreCase(correo)) {
-            throw new RuntimeException("El correo no coincide con el cliente registrado");
-        }
-
-        return cliente;
-    }
+     }
 
 
-    public Cliente actualizarDatosCliente(String numeroCuenta, String nombre, Long Id, String celular) {
+    public Cliente actualizarDatosCliente(String numeroCuenta, String nombre, String Id, String celular) {
         Cliente cliente = clienteRepositorio.findByNumeroCuenta(numeroCuenta)
                 .orElseThrow(() -> new RuntimeException("Número de cuenta no encontrado"));
 
         cliente.setNombre(nombre);
-        cliente.setId(Id);
         cliente.setCelular(celular);
         return clienteRepositorio.save(cliente);
     }

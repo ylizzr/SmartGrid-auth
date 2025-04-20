@@ -4,19 +4,21 @@ import lombok.Getter;
 import lombok.Setter;
 import jakarta.persistence.*;
 
-
 @Getter
 @Setter
-@Table(name = "T_Empleados")
 @Entity
+@Table(name = "empleados")
 public class Empleado {
+
     @Id
-    private Long id;
+    @Column (name = "cedula")
+    private String cedula;
 
     private String nombre;
     private String correo;
-    private String cedula;
     private String celular;
+
+    @Column (name = "area_encargada")
     private String areaEncargada;
 
     @OneToOne

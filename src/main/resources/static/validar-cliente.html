@@ -65,7 +65,6 @@
     <p>Por favor ingrese su número de cuenta</p>
 
     <form id="validarClienteForm">
-        <input type="hidden" id="correo" name="correo" th:value="${correo}">
         <div class="form-group">
             <label for="numeroCuenta">Número de Cuenta:</label>
             <input type="text" id="numeroCuenta" name="numeroCuenta" required>
@@ -73,16 +72,13 @@
         <button type="submit">Validar</button>
     </form>
 
-    <div id="error-message" class="error" style="display: none;"></div>
-</div>
 
-<script th:inline="javascript">
+<script>
     document.getElementById('validarClienteForm').addEventListener('submit', function (event) {
         event.preventDefault();
 
         const numeroCuenta = document.getElementById('numeroCuenta').value;
-        const correo = document.getElementById('correo').value;
-
+        
         fetch('/cliente/validar-cliente', {
             method: 'POST',
             headers: {
@@ -90,23 +86,20 @@
             },
             body: new URLSearchParams({
                 numeroCuenta: numeroCuenta,
-                correo: correo
             })
         })
         .then(response => response.json())
         .then(data => {
             if (data && data.redirectUrl) {
                 window.location.href = data.redirectUrl;
-            } else if (data) {
-                document.getElementById('error-message').textContent = data;
-                document.getElementById('error-message').style.display = 'block';
+        
             } else {
-                document.getElementById('error-message').textContent = "La cuenta no existe.";
+                document.getElementById('error-message').textContent = data ||  "La cuenta no existe.";
                 document.getElementById('error-message').style.display = 'block';
             }
         })
-        .catch(error => {
-            document.getElementById('error-message').textContent = "La cuenta no existe.";
+        .catch(() => {
+            document.getElementById('error-message').textContent = "Error al validar.";
             document.getElementById('error-message').style.display = 'block';
         });
     });

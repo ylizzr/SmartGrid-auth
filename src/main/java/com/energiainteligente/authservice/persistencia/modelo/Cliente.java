@@ -7,17 +7,23 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Table(name = "T_Clientes")
 @Entity
+@Table(name = "clientes")
 public class Cliente {
+
     @Id
-    private Long id;
+    @Column(name = "id")
+    private String  id;
 
     private String nombre;
+    @Column(name = "correo_electronico")
     private String correoElectronico;
-    private String numeroCuenta;
     private String celular;
 
+    @Column(name = "numero_cuenta")
+    private String numeroCuenta;
+
+   
     @OneToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;

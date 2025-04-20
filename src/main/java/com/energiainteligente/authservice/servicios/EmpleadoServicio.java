@@ -15,12 +15,12 @@ public class EmpleadoServicio {
         this.empleadoRepositorio = empleadoRepositorio;
     }
 
-    public boolean validarEmpleado(String correo, String cedula) {
-        return empleadoRepositorio.existsByCorreoAndCedula(correo, cedula);
+    public boolean validarEmpleado(String cedula) {
+        return empleadoRepositorio.existsById(cedula);
     }
 
-    public Empleado obtenerPorCorreo(String correo) {
-        return empleadoRepositorio.findByCorreo(correo)
+    public Empleado obtenerPorCedula(String cedula) {
+        return empleadoRepositorio.findById(cedula)
                 .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
     }
 

@@ -7,22 +7,25 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@Table(name = "T_Usuarios")
 @Entity
+@Table(name = "usuarios")
 public class Usuario {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
 
+    @Id
+    @Column (name = "id")
+    private String id;
+
+    @Column(name = "google_id")
     private String googleId;
     private String correo;
     private String rol; // "CLIENTE" o "EMPLEADO"
 
+/*
     @OneToOne(mappedBy = "usuario")
     private Cliente cliente;
 
     @OneToOne(mappedBy = "usuario")
     private Empleado empleado;
-
+*/
 
 }

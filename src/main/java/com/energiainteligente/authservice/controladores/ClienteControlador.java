@@ -7,7 +7,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
-
 import java.util.Collections;
 
 
@@ -29,17 +28,12 @@ public class ClienteControlador {
         return new RedirectView("/cliente/validar-cliente?correo=" + correo);
     }
 
-    @GetMapping("/validar-cliente")
-    public String mostrarValidarCliente(@RequestParam String correo, Model model) {
-        model.addAttribute("correo", correo);
-        return "validar-cliente";
-    }
 
     @PostMapping("/validar-cliente")
     @ResponseBody
-    public ResponseEntity<?> validarCliente(@RequestParam String numeroCuenta, @RequestParam String correo) {
+    public ResponseEntity<?> validarCliente(@RequestParam String numeroCuenta) {
         try {
-            clienteServicio.validarCliente(correo, numeroCuenta);
+            clienteServicio.validarCliente(numeroCuenta);
             return ResponseEntity.ok().body(Collections.singletonMap("redirectUrl", "/bienvenido-cliente.html"));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
@@ -50,7 +44,7 @@ public class ClienteControlador {
     public RedirectView actualizarCliente(
             @RequestParam String correo,
             @RequestParam String nombre,
-            @RequestParam Long Id,
+            @RequestParam String Id,
             @RequestParam String celular) {
 
         clienteServicio.actualizarDatosCliente(correo, nombre,Id, celular);
