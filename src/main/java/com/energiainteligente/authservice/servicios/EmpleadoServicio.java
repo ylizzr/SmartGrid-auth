@@ -5,6 +5,7 @@ import com.energiainteligente.authservice.persistencia.repositorio.EmpleadoRepos
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 @Service
 @Transactional
 public class EmpleadoServicio {
@@ -24,13 +25,18 @@ public class EmpleadoServicio {
                 .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
     }
 
-    public Empleado registrarEmpleado(String nombre, String cedula, String correo, String areaEncargada) {
-        Empleado empleado = new Empleado();
-        empleado.setNombre(nombre);
-        empleado.setCedula(cedula);
-        empleado.setCorreo(correo);
-        empleado.setAreaEncargada(areaEncargada);
-
-        return empleadoRepositorio.save(empleado);
+   public void guardar(Empleado empleado) {
+        empleadoRepositorio.save(empleado);
     }
+
+     public List<Empleado> obtenerTodos() {
+        return empleadoRepositorio.findAll();
+    } 
+
+     public void eliminarPorCedula(String cedula) {
+        if (!empleadoRepositorio.existsById(cedula)) {
+            throw new RuntimeException("Empleado no encontrado con cédula: " + cedula);
+        }
+        empleadoRepositorio.deleteById(cedula);
+    } 
 }

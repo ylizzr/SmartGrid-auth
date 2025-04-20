@@ -20,8 +20,10 @@ public class Empleado {
 
     @Column (name = "area_encargada")
     private String areaEncargada;
-
+/*
     @OneToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
+*/
 }
+

@@ -18,14 +18,15 @@ public class Cliente {
     private String nombre;
     @Column(name = "correo_electronico")
     private String correoElectronico;
+    private String direccion;
     private String celular;
 
     @Column(name = "numero_cuenta")
     private String numeroCuenta;
 
-   
+/*   
     @OneToOne
     @JoinColumn(name = "usuario_id")
     private Usuario usuario;
-
+*/
 }

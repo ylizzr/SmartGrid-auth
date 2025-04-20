@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="es" xmlns:th="http://www.thymeleaf.org">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -65,16 +65,16 @@
     <p>Por favor ingrese su cédula</p>
 
     <form id="validarEmpleadoForm">
-	<div class="form-group´">
+	<div class="form-group">
             <label for="cedula">Cédula:</label>
             <input type="text" id="cedula" name="cedula" required>
         </div>
         <button type="submit">Validar</button>
     </form>
-
+</div>
 
 <script>
-    document.getElementById('validarEmpleadoForm').addEventListener('submit', function (event) {
+    document.getElementById('validarEmpleadoForm').addEventListener('submit', function (event)) {
         event.preventDefault();
 
         const cedula = document.getElementById('cedula').value;
@@ -88,7 +88,7 @@
                 cedula: cedula
             })
         })
-        .then(response => response.text())
+        .then(response => response.json())
         .then(data => {
             if (data.startsWith('/empleado/bienvenida')) {
                 window.location.href = data;
