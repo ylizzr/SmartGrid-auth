@@ -57,6 +57,12 @@
             color: red;
             margin-top: 10px;
         }
+
+        .success {
+            color: green;
+            margin-top:10px;
+         }
+
     </style>
 </head>
 <body>
@@ -71,15 +77,17 @@
         </div>
         <button type="submit">Validar</button>
     </form>
+    <div id="success-message" class="success" style="display: none;"></div>
     <div id="error-message" class="error" style="display: none;"></div>
 </div>
 
 <script>
+
     document.getElementById('validarClienteForm').addEventListener('submit', function (event) {
         event.preventDefault();
 
         const numeroCuenta = document.getElementById('numeroCuenta').value;
-        
+
         fetch('/cliente/validar', {
             method: 'POST',
             headers: {
@@ -89,19 +97,27 @@
                 numeroCuenta: numeroCuenta,
             })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data && data.redirectUrl) {
-                window.location.href = data.redirectUrl;
-        
+        .then(response => response.json()
+            .then(data => ({ status: response.status, body: data }))
+        )
+        .then(({ status, body }) => {
+            if (status === 200 && body.mensaje === "Conectado correctamente") {
+                document.getElementById('success-message').textContent = body.mensaje;
+                document.getElementById('success-message').style.display = 'block';
+                document.getElementById('error-message').style.display = 'none';
+                
+                    
+                
             } else {
-                document.getElementById('error-message').textContent = data ||  "La cuenta no existe.";
+                document.getElementById('error-message').textContent = body.mensaje || "La cuenta no existe.";
                 document.getElementById('error-message').style.display = 'block';
+                document.getElementById('success-message').style.display = 'none';
             }
         })
         .catch(() => {
             document.getElementById('error-message').textContent = "Error al validar.";
             document.getElementById('error-message').style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
         });
     });
 </script>

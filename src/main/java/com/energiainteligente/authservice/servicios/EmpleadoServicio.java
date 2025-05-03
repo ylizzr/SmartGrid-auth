@@ -16,9 +16,12 @@ public class EmpleadoServicio {
         this.empleadoRepositorio = empleadoRepositorio;
     }
 
-    public boolean validarEmpleado(String cedula) {
-        return empleadoRepositorio.existsById(cedula);
-    }
+    public void validarEmpleado(String cedula) {
+       if (!empleadoRepositorio.existsById(cedula)) {
+           throw new RuntimeException("Cédula no registrada");
+       }
+   }
+
 
     public Empleado obtenerPorCedula(String cedula) {
         return empleadoRepositorio.findById(cedula)

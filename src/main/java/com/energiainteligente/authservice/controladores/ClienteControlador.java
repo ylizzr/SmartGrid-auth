@@ -31,9 +31,11 @@ public class ClienteControlador {
     public ResponseEntity<?> validarCliente(@RequestParam String numeroCuenta) {
         try {
 	    clienteServicio.validarCliente(numeroCuenta);
-            return ResponseEntity.ok().body(Collections.singletonMap("redirectUrl", "/bienvenida-cliente.html"));
+            return ResponseEntity.ok().body(Collections.singletonMap("mensaje", "Conectado correctamente"));
+            
 	} catch (RuntimeException  e) {
-            return ResponseEntity.badRequest().body(e.getMessage());
+            return ResponseEntity.badRequest().body(Collections.singletonMap("mensaje", e.getMessage()));
+       
         }
     }
 

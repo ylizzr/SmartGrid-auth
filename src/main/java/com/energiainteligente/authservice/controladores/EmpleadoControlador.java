@@ -7,6 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.view.RedirectView;
+import java.util.Map;
+
 
 import java.util.Collections;
 
@@ -22,25 +24,23 @@ public class EmpleadoControlador {
         this.empleadoServicio = empleadoServicio;
     }
 
+    @GetMapping("/validar")
+    public String mostrarFormularioValidacion(@RequestParam String correo, Model model) {
+        model.addAttribute("correo", correo);
+        return "validar-empleado";
+    }
 
     @PostMapping("/validar")
     @ResponseBody
-    public ResponseEntity<?> procesarValidacion(@RequestParam String cedula) {
+    public ResponseEntity<Map<String, String>> procesarValidacion(@RequestParam String cedula) {
         try {
-            if (empleadoServicio.validarEmpleado(cedula)) {
-                return ResponseEntity.ok(Collections.singletonMap("redirecturl","/bienvenida-empleado.html"));
-            } else {
-                return ResponseEntity.badRequest().body("Cédula no registrada");
-            }
-        } catch (Exception e) {
-            return ResponseEntity.internalServerError().body("Error al validar "+ e.getMessage());
+            empleadoServicio.validarEmpleado(cedula);
+            return ResponseEntity.ok(Collections.singletonMap("mensaje", "Conectado correctamente"));
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("mensaje", e.getMessage()));
         }
     }
 
-    @GetMapping("/bienvenida")
-    public String mostrarBienvenida(){
-        return "redirect:/bienvenida-empleado.html";
-    }
 
 
     @GetMapping("/gestion")
@@ -75,6 +75,5 @@ public class EmpleadoControlador {
         empleadoServicio.eliminarPorCedula(cedula);
         return "redirect:/empleado/gestion";
     }
-
 
 }

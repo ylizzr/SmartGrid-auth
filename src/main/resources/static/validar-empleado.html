@@ -57,6 +57,12 @@
             color: red;
             margin-top: 10px;
         }
+
+        .success {
+            color: green; 
+            margin-top: 10px;
+         }
+
     </style>
 </head>
 <body>
@@ -67,14 +73,18 @@
     <form id="validarEmpleadoForm">
 	<div class="form-group">
             <label for="cedula">Cédula:</label>
-            <input type="text" id="cedula" name="cedula" required>
+            <input type="text" name="cedula" id="cedula"  required>
         </div>
         <button type="submit">Validar</button>
     </form>
+
+    <div id="success-message" class="success" style="display: none;"></div>
+    <div id="error-message" class="error" style="display: none;"></div>
+
 </div>
 
 <script>
-    document.getElementById('validarEmpleadoForm').addEventListener('submit', function (event)) {
+    document.getElementById('validarEmpleadoForm').addEventListener('submit', function (event) {
         event.preventDefault();
 
         const cedula = document.getElementById('cedula').value;
@@ -84,22 +94,29 @@
             headers: {
                 'Content-Type': 'application/x-www-form-urlencoded'
             },
-            body: new URLSearchParams({
-                cedula: cedula
-            })
+            body: new URLSearchParams({cedula: cedula })
         })
-        .then(response => response.json())
-        .then(data => {
-            if (data.startsWith('/empleado/bienvenida')) {
-                window.location.href = data;
+
+        .then(response => response.json()
+            .then(data => ({ status: response.status, body: data }))
+        )
+
+        .then(({ status, body }) => {
+            if (status === 200 && body.mensaje === "Conectado correctamente") {
+                document.getElementById('success-message').textContent = body.mensaje;
+                document.getElementById('success-message').style.display = 'block';
+                document.getElementById('error-message').style.display = 'none';
+                
             } else {
-                document.getElementById('error-message').textContent = data || "Empleado no válido.";
+                document.getElementById('error-message').textContent = body.mensaje || "Empleado no válido.";
                 document.getElementById('error-message').style.display = 'block';
+                document.getElementById('success-message').style.display = 'none';
             }
         })
         .catch(() => {
             document.getElementById('error-message').textContent = "Error al validar.";
             document.getElementById('error-message').style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
         });
     });
 </script>
