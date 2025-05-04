@@ -82,45 +82,32 @@
 </div>
 
 <script>
-
-    document.getElementById('validarClienteForm').addEventListener('submit', function (event) {
+    document.getElementById("validarClienteForm").addEventListener("submit", function(event) {
         event.preventDefault();
 
-        const numeroCuenta = document.getElementById('numeroCuenta').value;
+        const numeroCuenta = document.getElementById("numeroCuenta").value;
 
-        fetch('/validar-cliente', {
-            method: 'POST',
+        fetch("/validar-cliente", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                "Content-Type": "application/x-www-form-urlencoded"
             },
-            body: new URLSearchParams({
-                numeroCuenta: numeroCuenta,
-            })
+            body: new URLSearchParams({ numeroCuenta })
         })
         .then(response => response.json()
             .then(data => ({ status: response.status, body: data }))
         )
         .then(({ status, body }) => {
-            if (status === 200 && body.mensaje === "Conectado correctamente") {
-                document.getElementById('success-message').textContent = body.mensaje;
-                document.getElementById('success-message').style.display = 'block';
-                document.getElementById('error-message').style.display = 'none';
-                
-                    
-                
-            } else {
-                document.getElementById('error-message').textContent = body.mensaje || "La cuenta no existe.";
-                document.getElementById('error-message').style.display = 'block';
-                document.getElementById('success-message').style.display = 'none';
-            }
+            const mensajeDiv = document.getElementById("mensaje");
+            mensajeDiv.textContent = body.mensaje;
+            mensajeDiv.style.color = status === 200 ? "green" : "red";
         })
         .catch(() => {
-            document.getElementById('error-message').textContent = "Error al validar.";
-            document.getElementById('error-message').style.display = 'block';
-            document.getElementById('success-message').style.display = 'none';
+            const mensajeDiv = document.getElementById("mensaje");
+            mensajeDiv.textContent = "Error al conectar con el servidor.";
+            mensajeDiv.style.color = "red";
         });
     });
 </script>
 </body>
 </html>
-
