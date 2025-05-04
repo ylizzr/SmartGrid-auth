@@ -21,7 +21,7 @@ public class EmpleadoControlador {
         return "validar-empleado";
     }
 
-    @PostMapping("/empleado/validar")
+    @PostMapping("/validar-empleado")
     @ResponseBody
     public ResponseEntity<?> validarEmpleado(@RequestParam String cedula) {
         boolean existe = empleadoServicio.validarEmpleadoPorCedula(cedula);
