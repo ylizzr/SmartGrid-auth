@@ -45,7 +45,7 @@
             width: 100%;
             padding: 10px;
             margin-top: 1rem;
-            background-color: #007bff; /* Un color diferente para empleados */
+            background-color: #007BFF;
             color: white;
             font-size: 16px;
             border: none;
@@ -59,10 +59,9 @@
         }
 
         .success {
-            color: green; 
+            color: green;
             margin-top: 10px;
-         }
-
+        }
     </style>
 </head>
 <body>
@@ -71,44 +70,39 @@
     <p>Por favor ingrese su cédula</p>
 
     <form id="validarEmpleadoForm">
-	<div class="form-group">
+        <div class="form-group">
             <label for="cedula">Cédula:</label>
-            <input type="text" name="cedula" id="cedula"  required>
+            <input type="text" id="cedula" name="cedula" required>
         </div>
         <button type="submit">Validar</button>
     </form>
-
     <div id="success-message" class="success" style="display: none;"></div>
     <div id="error-message" class="error" style="display: none;"></div>
-
 </div>
 
 <script>
-    document.getElementById('validarEmpleadoForm').addEventListener('submit', function (event) {
+    document.getElementById("validarEmpleadoForm").addEventListener("submit", function(event) {
         event.preventDefault();
 
-        const cedula = document.getElementById('cedula').value;
+        const cedula = document.getElementById("cedula").value;
 
-        fetch('/empleado/validar', {
-            method: 'POST',
+        fetch("/validar-empleado", {
+            method: "POST",
             headers: {
-                'Content-Type': 'application/x-www-form-urlencoded'
+                "Content-Type": "application/x-www-form-urlencoded"
             },
-            body: new URLSearchParams({cedula: cedula })
+            body: new URLSearchParams({
+                cedula: cedula
+            })
         })
-
-        .then(response => response.json()
-            .then(data => ({ status: response.status, body: data }))
-        )
-
+        .then(response => response.json().then(data => ({ status: response.status, body: data })))
         .then(({ status, body }) => {
-            if (status === 200 && body.mensaje === "Conectado correctamente") {
+            if (status === 200 && body.mensaje === "Empleado encontrado") {
                 document.getElementById('success-message').textContent = body.mensaje;
                 document.getElementById('success-message').style.display = 'block';
                 document.getElementById('error-message').style.display = 'none';
-                
             } else {
-                document.getElementById('error-message').textContent = body.mensaje || "Empleado no válido.";
+                document.getElementById('error-message').textContent = body.mensaje || "Empleado no encontrado.";
                 document.getElementById('error-message').style.display = 'block';
                 document.getElementById('success-message').style.display = 'none';
             }
