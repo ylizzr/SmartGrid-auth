@@ -45,7 +45,7 @@
             width: 100%;
             padding: 10px;
             margin-top: 1rem;
-            background-color: #007BFF;
+            background-color: #4CAF50;
             color: white;
             font-size: 16px;
             border: none;
@@ -102,7 +102,7 @@
                 document.getElementById('success-message').style.display = 'block';
                 document.getElementById('error-message').style.display = 'none';
             } else {
-                document.getElementById('error-message').textContent = body.mensaje || "Empleado no encontrado.";
+                document.getElementById('error-message').textContent = body.mensaje || "El empleado no existe.";
                 document.getElementById('error-message').style.display = 'block';
                 document.getElementById('success-message').style.display = 'none';
             }
