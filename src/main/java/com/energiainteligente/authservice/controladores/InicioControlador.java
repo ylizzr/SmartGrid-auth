@@ -33,13 +33,5 @@ public class InicioControlador {
         }
     }
 
-    @GetMapping("/validar-cliente")
-    public String mostrarValidarCliente() {
-        return "validar-cliente";
-    }
 
-    @GetMapping("/validar-empleado")
-    public String mostrarValidarEmpleado() {
-        return "validar-empleado";
-    }
 }
