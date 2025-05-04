@@ -1,45 +1,17 @@
 package com.energiainteligente.authservice.servicios;
 
-import com.energiainteligente.authservice.persistencia.modelo.Empleado;
 import com.energiainteligente.authservice.persistencia.repositorio.EmpleadoRepositorio;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
+
 @Service
-@Transactional
 public class EmpleadoServicio {
+    @Autowired
+    private EmpleadoRepositorio empleadoRepositorio;
 
-    private final EmpleadoRepositorio empleadoRepositorio;
-
-    public EmpleadoServicio(EmpleadoRepositorio empleadoRepositorio) {
-        this.empleadoRepositorio = empleadoRepositorio;
+    public boolean existePorCedula(String cedula) {
+        return empleadoRepositorio.existsByCedula(cedula);
     }
-
-    public void validarEmpleado(String cedula) {
-       if (!empleadoRepositorio.existsById(cedula)) {
-           throw new RuntimeException("Cédula no registrada");
-       }
-   }
-
-
-    public Empleado obtenerPorCedula(String cedula) {
-        return empleadoRepositorio.findById(cedula)
-                .orElseThrow(() -> new RuntimeException("Empleado no encontrado"));
-    }
-
-   public void guardar(Empleado empleado) {
-        empleadoRepositorio.save(empleado);
-    }
-
-     public List<Empleado> obtenerTodos() {
-        return empleadoRepositorio.findAll();
-    } 
-
-     public void eliminarPorCedula(String cedula) {
-        if (!empleadoRepositorio.existsById(cedula)) {
-            throw new RuntimeException("Empleado no encontrado con cédula: " + cedula);
-        }
-        empleadoRepositorio.deleteById(cedula);
-    } 
 }
+

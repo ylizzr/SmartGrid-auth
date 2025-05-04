@@ -24,9 +24,5 @@ public class Cliente {
     @Column(name = "numero_cuenta")
     private String numeroCuenta;
 
-/*   
-    @OneToOne
-    @JoinColumn(name = "usuario_id")
-    private Usuario usuario;
-*/
+
 }

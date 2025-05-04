@@ -1,3 +1,4 @@
+
 package com.energiainteligente.authservice.servicios;
 
 import com.energiainteligente.authservice.persistencia.modelo.Usuario;
@@ -25,13 +26,13 @@ public class CustomOAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         try {
-            String email = oAuth2User.getAttribute("email");
+            String correo = oAuth2User.getAttribute("correo");
             String googleId = oAuth2User.getAttribute("sub");
 
-            Usuario usuario = usuarioServicio.buscarPorCorreo(email);
+            boolean usuario = usuarioServicio.buscarPorCorreo(correo);
 
             return new DefaultOAuth2User(
-                    Collections.singleton(new SimpleGrantedAuthority("ROLE_" + usuario.getRol())),
+                    Collections.singleton(new SimpleGrantedAuthority("ROLE_" + usuario)),
                     oAuth2User.getAttributes(),
                     "sub"
             );

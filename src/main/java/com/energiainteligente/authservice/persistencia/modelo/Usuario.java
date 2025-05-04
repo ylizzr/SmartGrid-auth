@@ -8,24 +8,15 @@ import lombok.Setter;
 @Getter
 @Setter
 @Entity
-@Table(name = "usuarios")
+@Table(name = "user")
 public class Usuario {
 
     @Id
     @Column (name = "id")
     private String id;
 
-    @Column(name = "google_id")
-    private String googleId;
+    private String nombre;
     private String correo;
-    private String rol; // "CLIENTE" o "EMPLEADO"
-
-/*
-    @OneToOne(mappedBy = "usuario")
-    private Cliente cliente;
-
-    @OneToOne(mappedBy = "usuario")
-    private Empleado empleado;
-*/
+    private String rol;
 
 }

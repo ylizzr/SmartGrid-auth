@@ -15,22 +15,14 @@ public class UsuarioServicio {
         this.usuarioRepositorio = usuarioRepositorio;
     }
 
-    public Usuario buscarPorCorreo(String correo) {
-        return usuarioRepositorio.findByCorreo(correo)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    public boolean buscarPorCorreo(String correo) {
+        return usuarioRepositorio.existsByCorreo(correo);
     }
 
     public Usuario crearUsuarioOAuth2(String googleId, String correo) {
         Usuario usuario = new Usuario();
-        usuario.setGoogleId(googleId);
         usuario.setCorreo(correo);
         usuario.setRol("PENDIENTE");
-        return usuarioRepositorio.save(usuario);
-    }
-
-    public Usuario actualizarRol(String correo, String rol) {
-        Usuario usuario = buscarPorCorreo(correo);
-        usuario.setRol(rol.toUpperCase());
         return usuarioRepositorio.save(usuario);
     }
 }

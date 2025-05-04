@@ -7,6 +7,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Configuration
 @EnableWebSecurity
@@ -27,32 +28,24 @@ public class SecurityConfig {
                                 "/",
                                 "/login.html",
                                 "/seleccion-rol.html",
-                                "/registro-cliente.html",
+                                "/guardar-rol",
                                 "/validar-cliente.html",
                                 "/validar-empleado.html",
                                 "/css/**",
                                 "/js/**"
                         ).permitAll()
-                        .requestMatchers("/bienvenida-cliente.html").hasRole("CLIENTE")
-                        .requestMatchers("/bienvenida-empleado.html").hasRole("EMPLEADO")
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
                         .loginPage("/login.html")
-                        .authorizationEndpoint(authorization -> authorization
-                                .baseUri("/oauth2/authorization")
-                        )
-                        .redirectionEndpoint(redirection -> redirection
-                                .baseUri("/login/oauth2/code/*")
-                        )
-                        .userInfoEndpoint(userInfo -> userInfo
-                                .userService(customOAuth2UserService)
-                        )
-                        .successHandler((request, response, authentication) -> {
-                            response.sendRedirect("/seleccion-rol.html");
-                        })
+                        .authorizationEndpoint(endpoint -> endpoint.baseUri("/oauth2/authorization"))
+                        .redirectionEndpoint(redir -> redir.baseUri("/login/oauth2/code/*"))
+                        .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
+                        .defaultSuccessUrl("/loginSuccess", true)
+
                 )
                 .logout(logout -> logout
+                        .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessUrl("/")
                         .permitAll()
                 );

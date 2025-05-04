@@ -1,44 +1,45 @@
 package com.energiainteligente.authservice.controladores;
 
-import com.energiainteligente.authservice.persistencia.modelo.Usuario;
-import com.energiainteligente.authservice.persistencia.repositorio.UsuarioRepositorio;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.servlet.view.RedirectView;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 @Controller
 public class InicioControlador {
 
-    private final UsuarioRepositorio usuarioRepositorio;
-
-    public InicioControlador(UsuarioRepositorio usuarioRepositorio) {
-        this.usuarioRepositorio = usuarioRepositorio;
-    }
-
     @GetMapping("/")
-    public String inicio() {
-        return "redirect:/login.html";
+    public String mostrarSeleccionRol() {
+        return "seleccion-rol";
     }
 
-    @GetMapping("/redirect-by-role")
-    public RedirectView redireccionarPorRol(Authentication authentication) {
-        OAuth2User principal = (OAuth2User) authentication.getPrincipal();
-        String correo = principal.getAttribute("email");
+    @PostMapping("/guardar-rol")
+    public String guardarRol(@RequestParam("rol") String rol, HttpSession session) {
+        session.setAttribute("rolSeleccionado", rol);
+        return "login";
+    }
 
-        Usuario usuario = usuarioRepositorio.findByCorreo(correo)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
+    @GetMapping("/loginSuccess")
+    public String redirigirSegunRol(HttpSession session) {
+        String rol = (String) session.getAttribute("rolSeleccionado");
 
-        if (usuario.getRol() == null || usuario.getRol().equalsIgnoreCase("PENDIENTE")) {
-            return new RedirectView("/seleccion-rol.html?correo=" + correo);
+        if ("cliente".equalsIgnoreCase(rol)) {
+            return "redirect:/validar-cliente";
+        } else if ("empleado".equalsIgnoreCase(rol)) {
+            return "redirect:/validar-empleado";
+        } else {
+            return "redirect:/";
         }
+    }
 
-        if (usuario.getRol().equalsIgnoreCase("CLIENTE")) {
-            return new RedirectView("/cliente/validar-cliente?correo=" + correo);
-        } else if (usuario.getRol().equalsIgnoreCase("EMPLEADO")) {
-            return new RedirectView("/empleado/validar?correo=" + correo);
-        }
-        return new RedirectView("/login.html");
+    @GetMapping("/validar-cliente")
+    public String mostrarValidarCliente() {
+        return "validar-cliente";
+    }
+
+    @GetMapping("/validar-empleado")
+    public String mostrarValidarEmpleado() {
+        return "validar-empleado";
     }
 }
