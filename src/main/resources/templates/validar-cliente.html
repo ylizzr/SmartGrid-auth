@@ -92,20 +92,30 @@
             headers: {
                 "Content-Type": "application/x-www-form-urlencoded"
             },
-            body: new URLSearchParams({ numeroCuenta })
+            body: new URLSearchParams({
+                numeroCuenta: numeroCuenta,
         })
         .then(response => response.json()
             .then(data => ({ status: response.status, body: data }))
-        )
+
         .then(({ status, body }) => {
-            const mensajeDiv = document.getElementById("mensaje");
-            mensajeDiv.textContent = body.mensaje;
-            mensajeDiv.style.color = status === 200 ? "green" : "red";
+            if (status === 200 && body.mensaje === "Conectado correctamente") {
+                document.getElementById('success-message').textContent = body.mensaje;
+                document.getElementById('success-message').style.display = 'block';
+                document.getElementById('error-message').style.display = 'none';
+
+
+
+            } else {
+                document.getElementById('error-message').textContent = body.mensaje || "La cuenta no existe.";
+                document.getElementById('error-message').style.display = 'block';
+                document.getElementById('success-message').style.display = 'none';
+            }
         })
         .catch(() => {
-            const mensajeDiv = document.getElementById("mensaje");
-            mensajeDiv.textContent = "Error al conectar con el servidor.";
-            mensajeDiv.style.color = "red";
+            document.getElementById('error-message').textContent = "Error al validar.";
+            document.getElementById('error-message').style.display = 'block';
+            document.getElementById('success-message').style.display = 'none';
         });
     });
 </script>

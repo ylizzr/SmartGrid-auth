@@ -24,10 +24,13 @@ public class ClienteControlador {
     @PostMapping("/validar-cliente")
     @ResponseBody
     public ResponseEntity<?> validarCliente(@RequestParam String numeroCuenta) {
-        if (clienteServicio.validarClientePorNumeroCuenta(numeroCuenta)) {
-            return ResponseEntity.ok().body(Collections.singletonMap("mensaje", "Cuenta válida. Bienvenido."));
-        } else {
-            return ResponseEntity.badRequest().body(Collections.singletonMap("mensaje", "Número de cuenta no encontrado."));
+        try {
+            clienteServicio.validarClientePorNumeroCuenta(numeroCuenta);
+            return ResponseEntity.ok().body(Collections.singletonMap("mensaje", "Conectado correctamente"));
+
+        } catch (RuntimeException  e) {
+            return ResponseEntity.badRequest().body(Collections.singletonMap("mensaje", e.getMessage()));
+
         }
     }
 }
