@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 public class InicioControlador {
 
-    @GetMapping("/")
+    @GetMapping("/seleccion-rol")
     public String mostrarSeleccionRol() {
         return "seleccion-rol";
     }
