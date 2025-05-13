@@ -1,13 +1,16 @@
 package com.energiainteligente.authservice.controladores;
 
 import com.energiainteligente.authservice.servicios.ClienteServicio;
+import com.energiainteligente.authservice.persistencia.modelo.Cliente;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
+import java.util.List;
 
-@Controller
+@RestController
+@RequestMapping("/api/clientes")
 public class ClienteControlador {
 
     private final ClienteServicio clienteServicio;
@@ -16,22 +19,9 @@ public class ClienteControlador {
         this.clienteServicio = clienteServicio;
     }
 
-    @GetMapping("/validar-cliente")
-    public String mostrarFormularioValidacion() {
-        return "validar-cliente";
+    @GetMapping("/mis-cuentas")
+    public ResponseEntity<List<Cliente>> obtenerCuentas(@AuthenticationPrincipal OAuth2User user) {
+        String correo = user.getAttribute("email");
+        return ResponseEntity.ok(clienteServicio.obtenerClientesPorCorreo(correo));
     }
-
-    @PostMapping("/validar-cliente")
-    @ResponseBody
-    public ResponseEntity<?> validarCliente(@RequestParam String numeroCuenta) {
-        boolean existe = clienteServicio.validarClientePorNumeroCuenta(numeroCuenta);
-        if (existe) {
-            return ResponseEntity.ok().body(Collections.singletonMap("mensaje", "Conectado correctamente"));
-        } else {
-            return ResponseEntity
-                    .badRequest()
-                    .body(Collections.singletonMap("mensaje", "Número de cuenta no encontrado"));
-        }
-    }
-
 }

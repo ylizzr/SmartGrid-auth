@@ -25,23 +25,15 @@ public class SecurityConfig {
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/",
-                                "/login.html",
-                                "/seleccion-rol.html",
-                                "/guardar-rol",
-                                "/validar-cliente.html",
-                                "/validar-empleado.html",
-                                "/css/**",
-                                "/js/**"
+                                "/", "/css/**", "/js/**", "/img/**",
+                                "/oauth2/**"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .oauth2Login(oauth -> oauth
-                        .loginPage("/login.html")
-                        .authorizationEndpoint(endpoint -> endpoint.baseUri("/oauth2/authorization"))
-                        .redirectionEndpoint(redir -> redir.baseUri("/login/oauth2/code/*"))
+                        .loginPage("/")
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                        .defaultSuccessUrl("/loginSuccess", true)
+                        .defaultSuccessUrl("http://localhost:8090/index", true)
 
                 )
                 .logout(logout -> logout

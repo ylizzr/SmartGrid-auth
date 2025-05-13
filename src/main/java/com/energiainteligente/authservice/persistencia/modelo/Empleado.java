@@ -1,25 +1,22 @@
 package com.energiainteligente.authservice.persistencia.modelo;
 
-import lombok.Getter;
-import lombok.Setter;
 import jakarta.persistence.*;
+import lombok.*;
 
-@Getter
-@Setter
 @Entity
-@Table(name = "empleados")
+@Table(name = "empleado")
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 public class Empleado {
 
     @Id
     @Column (name = "cedula")
     private String cedula;
 
-    private String nombre;
-    private String correo;
-    private String celular;
+    private String usuario;
 
+    private String contrasena;
+    private String nombre;
     @Column (name = "area_encargada")
     private String areaEncargada;
-
 }
-

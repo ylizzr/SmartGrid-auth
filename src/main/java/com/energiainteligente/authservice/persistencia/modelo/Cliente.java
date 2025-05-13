@@ -1,14 +1,12 @@
 package com.energiainteligente.authservice.persistencia.modelo;
 
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-
-@Getter
-@Setter
 @Entity
 @Table(name = "clientes")
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 public class Cliente {
 
     @Id
@@ -16,13 +14,11 @@ public class Cliente {
     private String  id;
 
     private String nombre;
-    @Column(name = "correo_electronico")
-    private String correoElectronico;
-    private String direccion;
-    private String celular;
-
     @Column(name = "numero_cuenta")
     private String numeroCuenta;
 
-
+    private String correo;
+    private String direccion;
+    private String celular;
 }
+

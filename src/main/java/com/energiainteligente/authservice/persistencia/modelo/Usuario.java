@@ -1,22 +1,19 @@
 package com.energiainteligente.authservice.persistencia.modelo;
 
+
 import jakarta.persistence.*;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
-
-@Getter
-@Setter
 @Entity
-@Table(name = "user")
+@Table(name = "users")
+@Getter @Setter
+@NoArgsConstructor @AllArgsConstructor
 public class Usuario {
 
     @Id
-    @Column (name = "id")
-    private String id;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Long id;
 
-    private String nombre;
     private String correo;
-    private String rol;
-
+    private String rol; // "cliente" o "empleado"
 }

@@ -2,11 +2,11 @@ package com.energiainteligente.authservice.servicios;
 
 import com.energiainteligente.authservice.persistencia.modelo.Usuario;
 import com.energiainteligente.authservice.persistencia.repositorio.UsuarioRepositorio;
-import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
+
 @Service
-@Transactional
 public class UsuarioServicio {
 
     private final UsuarioRepositorio usuarioRepositorio;
@@ -15,14 +15,12 @@ public class UsuarioServicio {
         this.usuarioRepositorio = usuarioRepositorio;
     }
 
-    public boolean buscarPorCorreo(String correo) {
-        return usuarioRepositorio.existsByCorreo(correo);
+    public Optional<Usuario> buscarPorCorreo(String correo) {
+        return usuarioRepositorio.findByCorreo(correo);
     }
 
-    public Usuario crearUsuarioOAuth2(String googleId, String correo) {
-        Usuario usuario = new Usuario();
-        usuario.setCorreo(correo);
-        usuario.setRol("PENDIENTE");
-        return usuarioRepositorio.save(usuario);
+    public Usuario registrarSiNoExiste(String correo, String rol) {
+        return usuarioRepositorio.findByCorreo(correo)
+                .orElseGet(() -> usuarioRepositorio.save(new Usuario(null, correo, rol)));
     }
 }
