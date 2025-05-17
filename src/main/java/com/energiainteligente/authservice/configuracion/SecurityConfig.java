@@ -33,7 +33,7 @@ public class SecurityConfig {
                 .oauth2Login(oauth -> oauth
                         .loginPage("/")
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                        .defaultSuccessUrl("http://localhost:8090/index", true)
+                        .defaultSuccessUrl("http://localhost:8082/portal-clientes", true)
 
                 )
                 .logout(logout -> logout

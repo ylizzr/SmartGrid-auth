@@ -1,6 +1,6 @@
 package com.energiainteligente.authservice.controladores;
-/*
-import com.energiainteligente.authservice.servicios.EmpleadoServicio;
+
+//import com.energiainteligente.authservice.servicios.EmpleadoServicio;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
@@ -13,4 +13,3 @@ public class EmpleadoControlador {
         return "empleado-login";
     }
 }
-*/

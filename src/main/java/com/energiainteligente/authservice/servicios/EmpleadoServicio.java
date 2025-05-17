@@ -1,9 +1,9 @@
-package com.energiainteligente.authservice.servicios;/*
+package com.energiainteligente.authservice.servicios;
 import com.energiainteligente.authservice.persistencia.modelo.Empleado;
 import com.energiainteligente.authservice.persistencia.repositorio.EmpleadoRepositorio;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
+/*
 @Service
 public class EmpleadoServicio {
 
