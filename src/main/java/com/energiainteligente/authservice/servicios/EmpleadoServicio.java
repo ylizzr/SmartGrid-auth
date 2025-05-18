@@ -3,7 +3,9 @@ import com.energiainteligente.authservice.persistencia.modelo.Empleado;
 import com.energiainteligente.authservice.persistencia.repositorio.EmpleadoRepositorio;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-/*
+
+import java.util.List;
+
 @Service
 public class EmpleadoServicio {
 
@@ -20,5 +22,16 @@ public class EmpleadoServicio {
                 .map(e -> passwordEncoder.matches(contrasena, e.getContrasena()))
                 .orElse(false);
     }
+
+    public Empleado guardar(Empleado empleado) {
+        if (empleado.getContrasena() != null) {
+            empleado.setContrasena(passwordEncoder.encode(empleado.getContrasena()));
+        }
+        return empleadoRepositorio.save(empleado);
+    }
+
+    public List<Empleado> obtenerTodos() {
+        return empleadoRepositorio.findAll();
+    }
+
 }
-*/
