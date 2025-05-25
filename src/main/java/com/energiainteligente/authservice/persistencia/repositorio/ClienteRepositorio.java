@@ -7,4 +7,8 @@ import java.util.List;
 
 public interface ClienteRepositorio extends JpaRepository<Cliente, String> {
     List<Cliente> findByCorreo(String correo);
+    List<Cliente> findByNombreContainingIgnoreCase(String nombre);
+    List<Cliente> findByCorreoContainingIgnoreCase(String correo);
+    List<Cliente> findByNumeroCuentaContainingIgnoreCase(String numeroCuenta);
+
 }

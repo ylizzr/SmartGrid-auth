@@ -21,6 +21,7 @@ public class GestionControlador {
     private final EmpleadoServicio empleadoServicio;
 
     // --- CLIENTES ---
+
     @PostMapping("/clientes")
     public ResponseEntity<Cliente> crearCliente(@RequestBody Cliente cliente) {
         Cliente nuevoCliente = clienteServicio.guardar(cliente);
@@ -37,6 +38,11 @@ public class GestionControlador {
         Cliente cliente = clienteServicio.buscarPorId(id);
         return cliente != null ? ResponseEntity.ok(cliente) : ResponseEntity.notFound().build();
     }
+    @GetMapping("/clientes/buscar")
+    public ResponseEntity<List<Cliente>> buscarClientes(@RequestParam("filtro") String filtro) {
+        List<Cliente> resultados = clienteServicio.buscarPorFiltro(filtro);
+        return ResponseEntity.ok(resultados);
+    }
 
     @PutMapping("/clientes/{id}")
     public ResponseEntity<Cliente> actualizarCliente(@PathVariable String id, @RequestBody Cliente cliente) {
@@ -52,6 +58,7 @@ public class GestionControlador {
     }
 
     // --- EMPLEADOS ---
+
     @PostMapping("/empleados")
     public ResponseEntity<Empleado> crearEmpleado(@RequestBody Empleado empleado) {
         Empleado nuevoEmpleado = empleadoServicio.guardar(empleado);
@@ -67,6 +74,11 @@ public class GestionControlador {
     public ResponseEntity<Empleado> obtenerEmpleadoPorCedula(@PathVariable String cedula) {
         Optional<Empleado> empleado = empleadoServicio.buscarPorCedula(cedula);
         return empleado.map(ResponseEntity::ok).orElse(ResponseEntity.notFound().build());
+    }
+    @GetMapping("/empleados/buscar")
+    public ResponseEntity<List<Empleado>> buscarEmpleados(@RequestParam("filtro") String filtro) {
+        List<Empleado> resultados = empleadoServicio.buscarPorFiltro(filtro);
+        return ResponseEntity.ok(resultados);
     }
 
     @PutMapping("/empleados/{cedula}")

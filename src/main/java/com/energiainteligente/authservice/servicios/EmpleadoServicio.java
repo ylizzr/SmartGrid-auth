@@ -11,6 +11,8 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
+
 @Service
 @Transactional
 @AllArgsConstructor
@@ -32,6 +34,14 @@ public class EmpleadoServicio {
             throw new RuntimeException("Error al guardar empleado", e);
         }
     }
+    public List<Empleado> buscarPorFiltro(String filtro) {
+        return Stream.of(
+                empleadoRepositorio.findByNombreContainingIgnoreCase(filtro),
+                empleadoRepositorio.findByUsuarioContainingIgnoreCase(filtro),
+                empleadoRepositorio.findByCedulaContainingIgnoreCase(filtro)
+        ).flatMap(List::stream).distinct().toList();
+    }
+
 
     public Optional<Empleado> buscarPorCedula(String cedula) {
         try {

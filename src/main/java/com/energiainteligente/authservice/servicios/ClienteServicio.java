@@ -8,6 +8,7 @@ import org.apache.logging.log4j.Logger;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 @AllArgsConstructor
 @Service
@@ -16,6 +17,15 @@ public class ClienteServicio {
     private static final Logger log = LogManager.getLogger(ClienteServicio.class);
 
     private final ClienteRepositorio clienteRepositorio;
+
+    public List<Cliente> buscarPorFiltro(String filtro) {
+        return Stream.of(
+                clienteRepositorio.findByNombreContainingIgnoreCase(filtro),
+                clienteRepositorio.findByCorreoContainingIgnoreCase(filtro),
+                clienteRepositorio.findByNumeroCuentaContainingIgnoreCase(filtro)
+        ).flatMap(List::stream).distinct().toList();
+    }
+
 
     public List<Cliente> obtenerTodos() {
         try {
