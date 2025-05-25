@@ -17,6 +17,6 @@ public class Empleado {
 
     private String contrasena;
     private String nombre;
-    @Column (name = "area_encargada")
-    private String areaEncargada;
+    @Column (name = "cargo")
+    private String cargo;
 }
