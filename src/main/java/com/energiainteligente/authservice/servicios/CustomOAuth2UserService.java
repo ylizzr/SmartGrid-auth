@@ -1,6 +1,6 @@
 package com.energiainteligente.authservice.servicios;
 
-import com.energiainteligente.authservice.persistencia.modelo.Usuario;
+import com.energiainteligente.authservice.persistencia.modelo.Cliente;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -10,31 +10,23 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 
 import java.util.Collections;
-import java.util.Map;
+
 
 @Service
 public class CustomOAuth2UserService extends DefaultOAuth2UserService {
-
-    private final UsuarioServicio usuarioServicio;
-
-    public CustomOAuth2UserService(UsuarioServicio usuarioServicio) {
-        this.usuarioServicio = usuarioServicio;
-    }
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
-        Map<String, Object> attributes = oAuth2User.getAttributes();
-        String correo = (String) attributes.get("email");  // Google devuelve "email", no "correo"
-        String nombre = (String) attributes.get("name");
-
-        // Registra el usuario como CLIENTE si no existe
-        Usuario usuario = usuarioServicio.registrarSiNoExiste(correo, "CLIENTE");
+        String email = (String) oAuth2User.getAttributes().get("email");
+        if (email == null) {
+            throw new OAuth2AuthenticationException("No se pudo obtener el correo del usuario");
+        }
 
         return new DefaultOAuth2User(
-                Collections.singleton(new SimpleGrantedAuthority("ROLE_" + usuario.getRol())),
-                attributes,
+                Collections.singleton(new SimpleGrantedAuthority("ROLE_CLIENTE")),
+                oAuth2User.getAttributes(),
                 "email"
         );
     }

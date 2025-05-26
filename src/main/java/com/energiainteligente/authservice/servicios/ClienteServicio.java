@@ -18,6 +18,11 @@ public class ClienteServicio {
 
     private final ClienteRepositorio clienteRepositorio;
 
+    public boolean existePorCorreo(String correo) {
+        return !clienteRepositorio.findByCorreo(correo).isEmpty();
+    }
+
+
     public List<Cliente> buscarPorFiltro(String filtro) {
         return Stream.of(
                 clienteRepositorio.findByNombreContainingIgnoreCase(filtro),
@@ -73,10 +78,17 @@ public class ClienteServicio {
             return false;
         }
     }
-
     public List<Cliente> obtenerClientesPorCorreo(String correo) {
         try {
-            return clienteRepositorio.findByCorreo(correo);
+            if (correo == null) return List.of();
+
+            String correoNormalizado = correo.trim().toLowerCase();
+            log.info("Buscando clientes con correo normalizado: '{}'", correoNormalizado);
+
+            List<Cliente> resultados = clienteRepositorio.findByCorreo(correoNormalizado);
+            log.info(" Resultados obtenidos de base de datos: {}", resultados.size());
+
+            return resultados;
         } catch (Exception e) {
             log.error("Error al buscar clientes por correo {}: {}", correo, e.getMessage());
             throw new RuntimeException("Error al buscar por correo", e);

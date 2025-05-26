@@ -27,6 +27,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/", "/css/**", "/js/**", "/img/**",
                                 "/oauth2/**", "/login/oauth2/**",
+                                "/usuario/perfil",
                                 "/api/empleado/login",
                                 "/api/admin/**"
                         ).permitAll()
@@ -35,9 +36,9 @@ public class SecurityConfig {
                 .oauth2Login(oauth -> oauth
                         .loginPage("/")
                         .userInfoEndpoint(userInfo -> userInfo.userService(customOAuth2UserService))
-                        .defaultSuccessUrl("http://localhost:8082/portal-clientes", true)
-
+                        .defaultSuccessUrl("/login-success", true)
                 )
+
                 .logout(logout -> logout
                         .logoutRequestMatcher(new AntPathRequestMatcher("/logout"))
                         .logoutSuccessUrl("/")
