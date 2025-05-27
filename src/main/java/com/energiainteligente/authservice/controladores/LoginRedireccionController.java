@@ -11,6 +11,6 @@ public class LoginRedireccionController {
 
     @GetMapping("/login-success")
     public void redirigirAlPortalClientes(HttpServletResponse response) throws IOException {
-        response.sendRedirect("http://energiainteligente.ddns.net:8082/portal-clientes");
+        response.sendRedirect("https://energiainteligente.ddns.net:8082/portal-clientes");
     }
 }
