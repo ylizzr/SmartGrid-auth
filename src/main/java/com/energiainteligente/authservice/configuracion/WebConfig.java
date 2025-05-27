@@ -4,6 +4,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
+
 @Configuration
 public class WebConfig {
 
@@ -13,16 +14,11 @@ public class WebConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins(
-                                "http://35.208.6.42:8082",
-                                "http://localhost:8082",
-                                "http://energiainteligente.ddns.net:8082"
-                        )
+                        .allowedOrigins("http://energiainteligente.ddns.net:8082")
                         .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
-                        .exposedHeaders("Authorization", "Set-Cookie")
-                        .allowCredentials(true)
-                        .maxAge(3600);
+                        .exposedHeaders("Set-Cookie")
+                        .allowCredentials(true);
             }
         };
     }
