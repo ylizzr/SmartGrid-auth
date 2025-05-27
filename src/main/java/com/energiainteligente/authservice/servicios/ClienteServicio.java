@@ -58,6 +58,13 @@ public class ClienteServicio {
             throw new RuntimeException("Error al buscar cliente", e);
         }
     }
+    public Cliente buscarPorCorreo(String correo) {
+        List<Cliente> clientes = clienteRepositorio.findByCorreo(correo);
+        if (clientes != null && !clientes.isEmpty()) {
+            return clientes.get(0);
+        }
+        return null;
+    }
 
     public boolean borrar(Cliente cliente) {
         try {

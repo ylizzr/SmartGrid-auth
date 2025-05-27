@@ -44,6 +44,12 @@ public class GestionControlador {
         return ResponseEntity.ok(resultados);
     }
 
+    @GetMapping("/clientes/correo/{correo}")
+    public ResponseEntity<Cliente> obtenerClientePorCorreo(@PathVariable String correo) {
+        Cliente cliente = clienteServicio.buscarPorCorreo(correo);
+        return cliente != null ? ResponseEntity.ok(cliente) : ResponseEntity.notFound().build();
+    }
+
     @PutMapping("/clientes/{id}")
     public ResponseEntity<Cliente> actualizarCliente(@PathVariable String id, @RequestBody Cliente cliente) {
         Cliente actualizado = clienteServicio.actualizar(id, cliente);
