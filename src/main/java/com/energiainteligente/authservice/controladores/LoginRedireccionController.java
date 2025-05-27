@@ -11,6 +11,6 @@ public class LoginRedireccionController {
 
     @GetMapping("/login-success")
     public void redirigirAlPortalClientes(HttpServletResponse response) throws IOException {
-        response.sendRedirect("http://localhost:8082/portal-clientes");
+        response.sendRedirect("http://35.208.6.42:8082/portal-clientes");
     }
 }
