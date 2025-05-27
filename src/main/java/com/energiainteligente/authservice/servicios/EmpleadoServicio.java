@@ -25,7 +25,7 @@ public class EmpleadoServicio {
 
     public Empleado guardar(Empleado empleado) {
         try {
-            if (empleado.getContrasena() != null) {
+            if (empleado.getContrasena() != null && !empleado.getContrasena().isEmpty()) {
                 empleado.setContrasena(passwordEncoder.encode(empleado.getContrasena()));
             }
             return empleadoRepositorio.save(empleado);
@@ -34,6 +34,7 @@ public class EmpleadoServicio {
             throw new RuntimeException("Error al guardar empleado", e);
         }
     }
+
     public List<Empleado> buscarPorFiltro(String filtro) {
         return Stream.of(
                 empleadoRepositorio.findByNombreContainingIgnoreCase(filtro),
@@ -41,7 +42,6 @@ public class EmpleadoServicio {
                 empleadoRepositorio.findByCedulaContainingIgnoreCase(filtro)
         ).flatMap(List::stream).distinct().toList();
     }
-
 
     public Optional<Empleado> buscarPorCedula(String cedula) {
         try {
@@ -79,10 +79,11 @@ public class EmpleadoServicio {
             return empleadoRepositorio.findById(cedula)
                     .map(empleadoExistente -> {
                         empleadoActualizado.setCedula(cedula);
-                        if (empleadoActualizado.getContrasena() == null) {
+                        String nueva = empleadoActualizado.getContrasena();
+                        if (nueva == null || nueva.isEmpty()) {
                             empleadoActualizado.setContrasena(empleadoExistente.getContrasena());
-                        } else if (!empleadoActualizado.getContrasena().equals(empleadoExistente.getContrasena())) {
-                            empleadoActualizado.setContrasena(passwordEncoder.encode(empleadoActualizado.getContrasena()));
+                        } else if (!passwordEncoder.matches(nueva, empleadoExistente.getContrasena())) {
+                            empleadoActualizado.setContrasena(passwordEncoder.encode(nueva));
                         }
                         return empleadoRepositorio.save(empleadoActualizado);
                     })
@@ -93,14 +94,16 @@ public class EmpleadoServicio {
         }
     }
 
-    public boolean autenticarEmpleado(String usuario, String contrasena) {
+    public boolean autenticarEmpleado(String usuario, String contrasenaPlano) {
         try {
             return empleadoRepositorio.findByUsuario(usuario)
-                    .map(e -> passwordEncoder.matches(contrasena, e.getContrasena()))
+                    .map(e -> passwordEncoder.matches(contrasenaPlano, e.getContrasena()))
                     .orElse(false);
         } catch (Exception e) {
             log.error("Error en autenticación para usuario {}: {}", usuario, e.getMessage());
             throw new RuntimeException("Error en autenticación", e);
         }
     }
+
+
 }
